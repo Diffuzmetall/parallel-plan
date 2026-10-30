@@ -27,9 +27,11 @@ If a slice cannot be checked without several unfinished outputs, either reduce i
 
 ## Architecture that supports delivery
 
-Start the contract from a consumer example: what does the caller need to do, what result does it observe, and what failure must it handle? State the smallest interface that makes that interaction meaningful. Include state transitions, errors, authorization, retry or idempotency semantics only where the next consumer needs them.
+Start the contract from a consumer example: what does the caller need to do, what result does it observe, and what failure must it handle? State the smallest semantic interface that preserves the operation's invariants, not an interface tailored to one call site. Define state transitions, errors, authorization, retry and idempotency semantics wherever correctness or safety requires them, even if the next consumer never asks about them. Check the boundary against the next already-known use case when one exists; hypothetical consumers do not justify a general platform.
 
 Keep an invariant and the state enforcing it under a clear owner. Hide volatile storage/protocol details rather than spreading them into callers. A useful boundary makes a consumer simpler and allows focused tests without unrelated features; it is not merely a new name around an existing call.
+
+Keep source dependencies directed toward business policy: domain rules must not depend on HTTP contexts, ORM objects or vendor SDK types. Translate external representations at the boundary; policy owns any interfaces it needs, and concrete wiring stays outside it. For a consequential boundary, identify the allowed dependency direction and how existing module visibility, import rules or focused checks enforce it. Use the lightest enforceable boundary, not mandatory layers, interfaces or a service per slice.
 
 Prefer existing functions, modules and dependencies. Compare plausible alternatives only for a consequential boundary decision, recording why the selected one reduces coupling or uncertainty. No mandatory design tournament. A second implementation, plugin framework or service boundary needs an actual consumer or concrete verification need, not a hypothetical future agent.
 
