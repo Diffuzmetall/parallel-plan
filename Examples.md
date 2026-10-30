@@ -1,86 +1,161 @@
-# Worked planning examples
+# Real plans and worked cases
 
-These are fictional planning samples, not executed application tests. Paths, commands and interfaces below are illustrative proposals to confirm against a real repository. The examples demonstrate plan shape and evidence requirements; they do not establish measured speedups or model reliability.
+These cases come from **pi-durable-host** and **pi-durable-delm**, not fictional applications. They show actual requirements, delivery stages, handoffs, failures and recorded results. The analysis connects those decisions to ParallelPlan; it does **not** claim that these projects used this version of the skill, that the skill caused their outcomes, or that parallelism produced a measured speedup.
 
-## A. Web editor: from layers to a real saved item
+The source plans are included, not just linked:
 
-**Agreed requirements:** R1 create and reopen a private item; R2 edit with non-empty text; R3 failed saves preserve the previous value. Existing authentication is available. No sharing, search or new authentication system is requested. Four executors are available.
+| Project | Included source | Evidence boundary |
+| --- | --- | --- |
+| pi-durable-host | [HostPlan.md](HostPlan.md): published revised plan at `c0019d73152b58783d1b74fabe95f6982206aa55` | Historical P0–P5 delivery and a separate, still NO-GO migration milestone |
+| pi-durable-delm | [DeLMPlan.md](DeLMPlan.md): published plan-and-execution report at `6814eeb9268b87d719b6be0d076267d70c565990` | Actual N14 tasks, handoffs, correction, independent acceptance and source publication |
 
-**Before:** complete schema → complete API → complete UI → wire everything → test.
+These are archived **published** documents, not the original private frozen execution inputs. They retain the original Russian and stage identifiers; relative links point to the pinned upstream commits. They are references, not additional canonical plans or permission to resume those projects.
 
-**After:**
+All product results below are **recorded historical evidence** inspected for this documentation update. No product suite, migration, live model or runtime was rerun. Private transcripts, credentials and machine-specific execution plans are not bundled. Pi, DeLM, four actors and their task system are properties of these examples, not dependencies of this skill.
 
-| ID | Outcome | Prerequisite | Verification and boundary |
-| --- | --- | --- | --- |
-| A1 | An authorized user creates and reopens one private item through the minimal page | Existing authentication and disposable database | Browser creates text `alpha`; restart backend; reopen shows `alpha`. Another user cannot read or change it. Simulated write failure produces no false success or partial item. Covers R1 and first-write safety. |
-| A2 | The owner edits the item with non-empty text | A1's usable item contract and schema | Edit to `beta`, reopen shows `beta`; empty edit is rejected and leaves `beta`; another user's edit is denied. Covers R2. |
-| A3 | A failed edit preserves the last saved value and the unsaved draft | A2's update path | Force a storage write failure on disposable state; UI reports failure, draft remains, reopen shows last committed value. Restore storage and retry the user's draft. Covers R3. |
+## A. pi-durable-host: deliver clients around one real execution owner
 
-A1 introduces only the schema and endpoints it needs. A2 may begin consumer implementation once A1's contract is usable, but A2 is not accepted until its real roundtrip passes. A3 adds edit-specific recovery; A1/A2 never knowingly permit corrupt writes while waiting for A3.
+### Agreed outcome and constraints
 
-**Startup frontier:** one writer owns A1's coupled schema/server/page bootstrap. A second can prepare denied-user and storage-failure fixtures in a separate test-support area after agreeing on the boundary. No four-way implementation width is justified yet; do not invent list/search work for the other executors. After the bootstrap handoff, server and UI work may split on that contract with one named integration owner. At milestone acceptance, eligible peers can check persistence/isolation, edit/recovery and clean setup on the same candidate with separate databases and ports.
+Keep the existing backend/SDK and native Durable 1.4 execution/recovery owner. Make the terminal, BB integration and iii client use that owner rather than introducing another runtime or queue. Preserve exact saved model/profile identities, authenticated admission, canonical retries and independent installation. A working client must be demonstrated through its actual entry point, not inferred from compilation.
 
-**Proposed contract:** `createItem({text:"alpha"}, actor) → {id,text:"alpha"}`; unauthenticated requests are rejected, owner identity is server-derived, success means the transaction committed. The shared check creates then reads by ID through the real producer. UI fixtures may use this shape before the service is ready; they prove neither persistence nor access isolation.
+### The actual staged plan
 
-**Handoff example:** contract `item-create/v1`, identified schema patch and API example; **contract-ready**, not integrated. Consumer can build form submission against the fixture. Server owner supplies actual create/read evidence; UI owner owns the browser roundtrip. Any change to error semantics requires both owners to reconcile their checks.
+The historical acceptance sequence was **P0 → P1 → P2 → P3 → P4 → P5**, followed by a separately bounded P6 transition. These are the source plan's stages, not new tickets invented for this example.
 
-**Next action:** inspect the existing auth/test entry points and implement the A1 probe. Production deployment remains outside authority.
+| Original stage | Requirement and usable result | Check and evidence boundary |
+| --- | --- | --- |
+| P0 | One native owner; explicit profile and saved model IDs | Incompatible profile/model refuses before resume; no silent model substitution. This establishes the execution boundary before client expansion. |
+| P1 | Authenticated HTTP/SSE/SDK with canonical receipts | Retry, conflicting payload, cache expiry, crash and reopen preserve the intended execution; authorization and private-diagnostic regressions are checked. |
+| P2 | Independently installable host and configured native composition | Real configured tools, guards, memory, Goal and schedules; standalone packages do not acquire another adapter or a private installation dependency. Configured compatibility is not arbitrary-plugin compatibility. |
+| P3 | The existing terminal works as a remote client | Actual installed TUI/PTY checks cover editor, navigation, tools, interrupt, detach, reconnect and new session. A successful typecheck is not terminal acceptance. |
+| P4 | BB thread/child binding, controls, history and standalone bridge | Actual isolated Core/Chrome behavior on the exact compatibility overlay. An unexplained initial UI timeout remains disclosed; `/compact` is unsupported. |
+| P5 | Signed delegated iii work through the same native owner | Actual local engine/SDK and installed native faux host: retry, control, recovery and immutable answer reference. The iii-only installation is checked separately. |
+| Offline P6 | Bounded backup/restore and rollback preparation | Only a disposable closed-owner same-version rehearsal in this historical slice. It did not prove migration of a selected real session or cross-version recovery. |
 
-## B. Solo CLI: no UI and no team ceremony
+This was not “finish every backend feature, then build three empty frontends.” Each stage had an observable result and its own checks. The later clients reused the established owner/receipt boundary, while their UI or transport-specific behavior still needed acceptance.
 
-**Agreed requirements:** R1 import a small UTF-8 CSV with `sku,quantity` into a local store and inspect it later; R2 reject malformed rows without partial writes; R3 rerunning the same import does not duplicate records. No server, streaming mode or large-file support is requested.
+**A concrete vertical slice:** P3 crosses terminal interaction → SDK → backend/native owner → returned state. The installed PTY is the consumer check. Its outcome is a functioning remote terminal, not merely a controller module. P4 and P5 extend the system with different real consumers; they do not retrospectively make an untested P3 usable.
 
-| ID | Outcome | Prerequisite | Verification |
-| --- | --- | --- | --- |
-| B1 | Import two distinct valid rows and read them from another CLI process | Existing command framework or the smallest command entry point | Invoke the real import command against a disposable store; exit 0; a second process lists exactly the two expected records. Input validation and one transaction are part of the path. R1. |
-| B2 | Malformed and duplicate input has defined, non-destructive outcomes | B1's import boundary | A bad third row exits nonzero with a useful location and leaves the pre-import store unchanged; reimporting the original file leaves two records under the agreed upsert semantics. R2/R3. |
+### What the recorded delivery actually established
 
-B1's supported domain is explicit; it rejects unsupported input instead of partially importing it. B2 expands and verifies failure/idempotency behavior, not permission to postpone integrity. If upsert versus reject is not agreed, that is one product question before implementation, not a reason to design both modes.
+The pinned [status report][host-status] records **51 PASS / 2 PARTIAL** against 53 original criteria for the historical scope. It distinguishes source tests, installed packages, actual PTY/Core/engine checks and reused evidence on unchanged bytes. That aggregate does not remove the disclosed BB timing failure or establish production readiness.
 
-**Proposed probe:** `inventory import sample.csv --store scratch.db`, then a fresh `inventory list --store scratch.db`; compare literal records, not just command success. This command is illustrative, not an assertion that such a binary exists.
+The plan also keeps source publication, package release, deployment and data migration separate. A published repository is not evidence that a user's working installation was safely replaced.
 
-**Coverage:** R1 → B1; R2/R3 → B2, with transaction safety already required in B1. **Next frontier:** B1; one executor, no leases, workers or milestone fan-out invented by the plan. **Boundary:** command parsing → CSV parser → real local persistence → fresh-process output.
+### Replan: remove BB from the current critical path without calling it fixed
 
-## C. Library: usable behavior through a public API
+The later authorized milestone changed to **backend + SDK + terminal + actual local iii, without BB**, using one protected copy of a selected inactive session. The revised plan retained BB's unfinished checks and defect as deferred work; it did not erase them or keep them as an irrelevant blocker.
 
-**Agreed requirements:** R1 calculate a basket total from nonnegative integer minor-unit prices and quantities; R2 apply a fixed integer-minor-unit discount, floored at zero; R3 reject invalid inputs without mutating the basket. No percentage discounts, taxes, network, database or CLI is requested.
+Its real acceptance requirements were:
 
-| ID | Outcome | Prerequisite | Verification |
-| --- | --- | --- | --- |
-| C1 | A library consumer obtains a total for a valid basket | None | Public `total([{price:125,quantity:2}])` returns `250`; invalid inputs are rejected and the input object remains unchanged. R1/R3. |
-| C2 | The consumer applies a fixed discount through the same public boundary | C1's price/quantity contract | Discount `50` produces `200`; discount `300` produces `0`; invalid discounts are rejected without mutation. R2/R3; C1 checks retained. |
+1. Validate the definitions actually saved in the session before auto-resume.
+2. Import without changing native identities, history, tasks, documents, children or pending state; never silently remap the model.
+3. Demonstrate actual controlled continuation without replaying old actions. Label static or simulated checks separately.
+4. Demonstrate terminal and local iii against one backend, including reconnect, interrupt, recovery and canonical retry, without BB.
+5. Restore from the untouched original backup on a separate copy using the exact source runtime/profile.
+6. Obtain independent candidate-bound evidence and an outgoing review before publication.
 
-**Architecture choice:** one cohesive calculation module with a small public operation, not a pricing plugin framework. A consumer invocation is the contract. Implementation helpers may change without changing these tests. No fictitious persistence/UI work is needed to make the slice "vertical".
+This is a scope/dependency correction, not a new architecture. Already-valid unchanged evidence remains useful; newly imported real state requires its own proof.
 
-**Next frontier:** C1, followed by C2. One implementation owner suffices; a separate consumer may prepare examples against the agreed signature if there is actual concurrent demand. Performance benchmarking is not an invented acceptance gate.
+| Actual checkpoint | Recorded result | What it did not unblock |
+| --- | --- | --- |
+| Protected snapshot and import | Original preserved; actual import retained native records and artifacts | Import success alone did not permit an execution/continuation claim. |
+| Generated terminal/iii canary | Actual PTY and local engine checks passed | A generated faux session was not the selected real session. |
+| Separate original-runtime restore | Restricted rollback passed | No restoration of production authority or permission to activate the candidate. |
+| Actual candidate startup | Saved model availability was checked and refused before native session factory/resume because credentials were unavailable | No model remap, credential access or substitute faux continuation was allowed to turn this into PASS. |
 
-## D. Legacy migration: a bounded real transition
+**Recorded result: migration NO-GO.** The [selected-copy report][host-pilot] distinguishes the successful import, generated canary and restricted restore from the blocked actual continuation. Private proof locators and payloads are withheld; this public report is not a self-contained reproduction of that private pilot.
 
-**Agreed requirements:** R1 migrate existing saved records from format v1 to v2 without changing visible values; R2 interruption must not corrupt the original, and retry must be safe; R3 the old reader remains usable until explicit cutover approval. Production writes and deletion are not authorized.
+**Portable lesson:** replan the remaining path around the approved outcome, not around stale dependencies. A successful supporting output can unblock another bounded check without satisfying the final outcome. A real refusal may be the correct safety behavior while the requested transition remains incomplete.
 
-**Before:** build the entire v2 subsystem → bulk convert everything → see whether old callers still work.
+## B. pi-durable-delm: make an early contract useful before the producer is finished
 
-**After:**
+### Agreed outcome and constraints
 
-| ID | Kind and result | Prerequisite | Evidence required |
-| --- | --- | --- | --- |
-| D0 | Supporting characterization fixture for representative v1 records | Existing reader | Capture exact visible values from a disposable representative fixture; consumer D1. Not migration completion. |
-| D1 | Migrate one bounded local cohort and read it through the v2 reader | D0 and agreed format semantics | Visible values match D0; v1 originals remain intact; interrupt before and after output publication, then retry without loss or duplicates. R1/R2/R3 for this cohort. |
-| D2 | Expand to remaining authorized record shapes | D1's proven transition | Include empty/optional fields and boundary values; compare values, counts and identities; rerun interruption and retry checks where the transition differs. R1/R2 for remaining shapes. |
-| D3 | Cutover readiness decision | D1/D2 evidence and compatibility checks | Evidence packet names reader compatibility, remaining unsupported shapes, restore procedure and irreversible boundary. Production switch/deletion stays blocked on operator approval. R3. |
+Deliver the portable DeLM package into the **actually installed Native 1.4 host**, retaining its loader, admission controller, guards and execution owner. The previous HOST05 proof used Native 1.0.2 with a disclosed API patch; it could not establish current-host compatibility.
 
-**State ownership:** v1 remains authoritative before cutover. The migration writes a separate v2 artifact; it does not silently dual-write both representations. This simple design avoids changing production writers merely to test a format transition. If live updates must be supported during migration, that is a material requirement requiring a different consistency contract.
+The accepted scope used the existing four actors and disposable fixtures, ordinary terminals, and deterministic faux model requests. It did not authorize replacing Native, adding a second Harness, reloading the live team, making live/paid model calls or treating source publication as deployment.
 
-**Concurrency:** D0/D1's coupled migration writer stays single-owner. Another executor can inspect reader compatibility or prepare interruption fixtures in disjoint test paths. Separate cohorts are not automatically independent if they share publication state. **Next frontier:** D0, then D1; D3 depends on evidence, never D1 on D3's final acceptance.
+### Actual outputs, owners and handoffs
 
-## E. Eight agents, one shared writer and unavailable service access
+The [included plan-report](DeLMPlan.md) preserves actual task IDs and DONE event numbers. Here is the part needed to understand the slicing:
 
-**Agreed requirements:** add an external service operation to an existing CLI and SDK. All producer changes initially touch one registry module. Only four participants are admitted; eight were suggested. Service sandbox credentials are unavailable and no paid calls are authorized.
+| Original output | Owner | Actual handoff / verification |
+| --- | --- | --- |
+| N14-ABI, DONE 792 | Bob | A usable actual-host contract reached Carol and Alice before Bob finished N14-ADAPTER at DONE 834. Contract readiness was not adapter acceptance. |
+| N14-FIXTURE, DONE 804; N14-FIXTURE-INTEGRATION, DONE 825 | Dave | Actual-host MODEL-only fixture, then board/wake/reopen integration support; these were separate useful outputs, not progress notes inside one large task. |
+| N14-LAUNCH, DONE 839 | Carol | Portable skill and ordinary-terminal entry path; a terminal manager was not required. |
+| N14-PACKAGE, DONE 854; N14-ARCHIVE-OUTPUT, DONE 860 | Alice | Packaging/setup map and the exact immutable v2 archive for the installed acceptance run. |
+| N14-FINAL-REVIEW-INPUT, DONE 874 | Dave | Frozen candidate/evidence input made available while final acceptance was still open. |
+| N14-FINAL-UI-REVIEW, DONE 906; N14-FINAL-REVIEW, DONE 914 | Carol; Alice | Complementary independent UI and source/evidence checks, including the measurement correction below. |
+| N14-ACCEPT, DONE 918 | Dave | Final evidence index after both independent reviews and correction resolution. |
+| N14-PUBLISH, DONE 923 | Alice | Separate source delivery after acceptance; not an effect inferred from an assistant's progress report. |
 
-**Plan:** one owner defines the minimal shared operation and owns registry edits. CLI and SDK consumers can prepare disjoint code against the agreed contract. A fourth participant can prepare a shared boundary fixture/check if it has a concrete consumer. This gives at most four useful development lanes after the contract handoff, not eight independent production integrations.
+**Condensed dependency view from the recorded handoffs, not a complete board export:**
 
-**Evidence:** fixture runs prove local parsing and error presentation only. The real service criterion stays open on authorized sandbox access. Do not obtain credentials through chat, buy access, substitute another service or call fixture PASS an integrated result. Work requiring the unknown service semantics waits or is explicitly exploratory.
+```text
+N14-ABI ──> adapter, launcher and packaging work
+N14-FIXTURE ──> fixture integration
 
-**Replan delta:** if the service's real error contract differs, revise the contract, retain unrelated CLI parsing evidence, invalidate affected error-mapping/SDK checks, and route the change to those owners. Preserve existing claims. If only the implementation author is free, independent acceptance remains unavailable, not reassigned to that same author under a new role.
+finished runtime + launcher + packaging ──> immutable archive
+archive + fixture integration ──> installed checks / frozen review input
+review input ──> independent UI and source/evidence reviews
+accepted reviews + resolved finding ──> acceptance ──> publication
+```
 
-**Next frontier:** agree the minimal contract from available evidence; perform authorized local work; name the external-access decision and owner. No production completion claim until the actual boundary passes.
+The parallelism came from different usable outputs and write boundaries, not four people editing the same integration. Common files changed through sequential handoffs; the Git index had one publisher. The actors did not launch a new reviewer team for each small task.
+
+### The deadlock avoided by splitting an early output
+
+If reviewers wait for final acceptance to be DONE, while final acceptance waits for their review, nobody can finish. The producer therefore published **N14-FINAL-REVIEW-INPUT** separately. Reviewers consumed the frozen candidate, not a claim that the entire acceptance was already complete.
+
+There was a second constraint: one unfinished claim per actor. Publishing a child output while keeping the blocking parent claim would not solve that ownership problem. The recorded workflow used **release → claim → complete → reclaim**, rather than simultaneously holding both tasks. Another tracker might express this differently; the portable requirement is that the output can actually be owned and completed.
+
+### What the installed slice exercised
+
+The [installed-flow result][delm-flow] records two product-opened ordinary-terminal actors, bootstrap replay, real Native Bash work against the board, event wake/read/explicit ACK, exact pending-wait reopen, cancellation, stop/resume fences, draft preservation and the shipped interactive curses board. The read-only observer did not mutate the board or consume the actor's receipt; quitting it left the backend and Native owners alive.
+
+This crosses the package → actual host loader → advertised tool → board → wake → consumer boundary. A mocked loader or a board mutation performed instead of the actor's real tool call would not establish the same result.
+
+## C. pi-durable-delm: invalidate the wrong evidence, not the whole product
+
+During independent review, Carol found that a post-removal assertion was unsupported. The existing lifecycle result claimed the removed skill was absent from the actual prompt, but a successful assistant response did not prove the required observation had occurred. A soft hook error could coexist with that response.
+
+The source plan's response was not “rerun everything” or “change the product until the test passes”:
+
+| Step | Actual correction | Readiness consequence |
+| --- | --- | --- |
+| Finding | Retract the unsupported negative-removal inference | That claim could no longer support final acceptance. Other unchanged runtime evidence was not automatically discarded. |
+| New output | N14-POST-REMOVE-WITNESS, DONE 896; append-only supplement | Preserve the original candidate/evidence. Measure the **effective current** SDK catalogue, rather than grep the entire preserved history for old skill text. |
+| Hard gate | Require an actual measurement and reject five negative cases | Missing record, hook error, count mismatch, active skill and active wait tool must all fail the gate. |
+| Independent recheck | Reviewer resolution, UI review and source/evidence review | The correction becomes accepted evidence, rather than the producer declaring the old claim valid again. |
+| Final acceptance | N14-ACCEPT after those reviews | Final verdict explicitly depends on the supplement; the original lifecycle flag alone remains insufficient. |
+
+The [hard-gate result][delm-hard-gate] records an accepted actual measurement and all five rejected negative cases. The authoritative [final review index][delm-index] records the retracted claim, replacement measurement, independent reviews and exact archive identity.
+
+**Recorded outcome:** `PASS_LOCAL_CURRENT_INSTALLED_NATIVE14_WITH_EXPLICIT_CORRECTION`, tied to archive SHA-256 `830e43da3e6119fad22507d29db7da0de94fa80817442b26ce4298ca323e7480`. The index correlates 449 installed/extracted files and 37 runtime assets.
+
+The clean pipeline used 17 faux requests; the bounded correction added two. Including the earlier disclosed 17-request attempt, the index records **36 total faux requests, zero live/paid requests**. These are historical counters, not requests made while writing this example. The earlier acceptance prose's pre-supplement count is not the final total.
+
+Live-team reload, live-model quality and fresh-machine public retrieval were not established by that local acceptance. Source publication subsequently occurred as its own task; neither event proves rollout or model effectiveness.
+
+**Portable lesson:** publish a consumer-ready candidate, attach findings to the exact claim they invalidate, keep the original evidence, add the necessary corrective check, and reverify before unblocking acceptance. Do not confuse a green command, a completed producer task or a confident narrative with the missing proof.
+
+## Applying the cases without copying their machinery
+
+Use the existing [templates](Templates.md) to write only the parts your task needs:
+
+- Name a real first roundtrip, as the host plan did for execution and its clients.
+- Split a useful early contract or review input when a consumer is genuinely waiting for it, as N14 did.
+- Check both dependency readiness and whether someone can own the next output.
+- When scope changes, preserve unresolved defects and unchanged evidence instead of relabelling everything DONE.
+- When evidence fails, repair and recheck the affected claim before downstream acceptance.
+
+Keep the project's specification and canonical plan authoritative. These archives are learning material, not a reason to copy their actor count, stages, tracker, permission model or runtime into a simpler task.
+
+[host-status]: https://github.com/Diffuzmetall/pi-durable-host/blob/c0019d73152b58783d1b74fabe95f6982206aa55/docs/STATUS.md
+[host-pilot]: https://github.com/Diffuzmetall/pi-durable-host/blob/c0019d73152b58783d1b74fabe95f6982206aa55/docs/verification/REAL_PILOT.md
+[delm-flow]: https://github.com/Diffuzmetall/pi-durable-delm/blob/6814eeb9268b87d719b6be0d076267d70c565990/evidence/native14/acceptance/installed-flow-result.json
+[delm-hard-gate]: https://github.com/Diffuzmetall/pi-durable-delm/blob/6814eeb9268b87d719b6be0d076267d70c565990/evidence/native14/acceptance/postremove-hard-gate-result.json
+[delm-index]: https://github.com/Diffuzmetall/pi-durable-delm/blob/6814eeb9268b87d719b6be0d076267d70c565990/evidence/native14/acceptance/final-review-index.json

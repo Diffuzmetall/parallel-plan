@@ -38,7 +38,7 @@ Read the selected workflow. It routes to these files only as needed:
 
 - [SliceDesign](SliceDesign.md): splitting choices, meaningful boundaries, architecture and fast feedback.
 - [Templates](Templates.md): copyable plan, slice, contract and handoff shapes; omit inapplicable fields.
-- [Examples](Examples.md): web, CLI, library, migration and constrained-team examples.
+- [Examples](Examples.md): real host migration and DeLM delivery cases, with archived plans and pinned evidence.
 - [WorkerContract](WorkerContract.md): short guidance for an authorized execution handoff.
 - [WaitPolicy](WaitPolicy.md): work discovery and bounded idle checks, not an installed scheduler.
 - [Integrations](Integrations.md): optional runtime mapping, including DeLM; not needed for ordinary planning.

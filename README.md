@@ -41,23 +41,16 @@ Ask your agent to use **parallel-plan** and supply your agreed requirements or e
 
 For a small solo change, the output can be a few slice cards and a verification recipe. Team coordination detail is conditional, not mandatory ceremony.
 
-## Example: an item editor
+## Real examples, with the actual plans
 
-Instead of:
+[Examples.md](Examples.md) follows two real projects from requirements through delivery and recorded evidence:
 
-```text
-all database work → all API work → all screens → integration → tests
-```
+- **pi-durable-host:** staged backend/client delivery, then a revised migration route without BB. Import and restricted restore passed, but actual continuation remained blocked: the migration verdict stayed **NO-GO**.
+- **pi-durable-delm:** an early ABI contract unblocked consumers before the adapter was finished. A separate frozen review input avoided an acceptance/reviewer dependency cycle; a faulty removal assertion required a measured correction before final acceptance.
 
-Plan:
+The original published [host plan](HostPlan.md) and [DeLM plan-report](DeLMPlan.md) are included as commit-pinned snapshots, in their original Russian. The worked analysis is in English. These are historical cases, not invented demonstrations or proof that this skill caused the outcomes.
 
-1. An authorized user creates and reopens one private item through the real entry point, API, and storage. Verify persistence and access isolation.
-2. The owner edits that item with validation. Keep the first roundtrip working.
-3. A failed edit preserves the last saved value and the unsaved draft. Verify failure and recovery on disposable state.
-
-Each increment includes the safety checks its behavior requires. Later recovery work is not permission to ship corrupt writes in the first increment.
-
-Consumers can start against an agreed contract before the producer is complete. Their fixture results remain provisional until the real integration passes. See [Examples.md](Examples.md) for CLI, library, migration, and constrained-team cases.
+The transferable pattern is a usable early output, an explicit consumer, a real assembled check and honest remaining gates—not these projects' runtime, tracker or actor count.
 
 ## Package map
 
@@ -67,7 +60,9 @@ Consumers can start against an agreed contract before the producer is complete. 
 | [Workflows/Prepare.md](Workflows/Prepare.md) | The planning workflow and deliverable contract |
 | [SliceDesign.md](SliceDesign.md) | Splitting choices, architecture boundaries, and evidence |
 | [Templates.md](Templates.md) | Adaptable plan, slice, contract, and handoff shapes |
-| [Examples.md](Examples.md) | Worked planning examples |
+| [Examples.md](Examples.md) | Source-backed host and DeLM cases, checks, outcomes and limitations |
+| [HostPlan.md](HostPlan.md) | Archived published host plan, with pinned upstream links |
+| [DeLMPlan.md](DeLMPlan.md) | Archived published DeLM plan-and-execution report |
 | [Checks.md](Checks.md) | Acceptance scenarios and failure cases |
 | [WorkerContract.md](WorkerContract.md) | Optional guidance for an authorized execution handoff |
 | [WaitPolicy.md](WaitPolicy.md) | Optional work-discovery design; not an installed scheduler |
@@ -84,7 +79,7 @@ A plan describes checks to perform. It does not prove that the product works. Se
 
 ## Validation status
 
-[Checks.md](Checks.md) contains representative scenarios, not an executed model benchmark. [Examples.md](Examples.md) contains illustrative plans, not executed product tests. Structural checks and link validation cannot establish that a skill improves model outcomes. No measured speedup or behavioral-evaluation result is claimed.
+[Checks.md](Checks.md) contains representative scenarios, not an executed model benchmark. [Examples.md](Examples.md) analyzes real plans and recorded product evidence; those product checks were not rerun for this documentation. Structural checks, link validation and historical case studies cannot establish that this skill improves model outcomes. No measured speedup or behavioral-evaluation result is claimed.
 
 ## License
 
@@ -92,4 +87,4 @@ A plan describes checks to perform. It does not prove that the product works. Se
 
 ## Attribution
 
-This package synthesizes planning principles into a standalone workflow. [Sources.md](Sources.md) records influences and deliberately excluded machinery. Referenced tools and skills are not bundled or required; no rights to their separate content are granted by this repository.
+This package synthesizes planning principles into a standalone workflow. [Sources.md](Sources.md) records influences and deliberately excluded machinery. The two source-plan snapshots identify their original repositories, commits and MIT licenses; they bundle documentation only, not those projects' runtimes or private execution inputs. Other referenced tools and skills are not bundled or required.
