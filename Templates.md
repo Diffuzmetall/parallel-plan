@@ -9,7 +9,7 @@ Adapt these to the project's canonical document or tracker. Keep stable requirem
 
 ## Goal and boundaries
 Outcome: <observable change for a user/operator>
-Source: <request/spec/criterion references>
+Source: <request/spec/criterion references; agreed revision or bounded snapshot when needed>
 Already works: <verified path and evidence, or unknown>
 Preserve: <invariants and fixed decisions>
 Excluded: <non-goals>
@@ -43,6 +43,8 @@ Scope / excluded: <smallest safe complete case / later cases>
 Verification: <setup; action or confirmed command; expected result; evidence location>
 Preserves: <existing regression and new risk-relevant negative check>
 Open gate: <authority, unknown contract, unavailable service, or none>
+Consumer readiness, if applicable: <specific output completion and check that unblock the named consumer>
+Readiness invalidation, if applicable: <relevant failure; resolution owner; evidence needed to unblock>
 ```
 
 For a supporting output, replace the path with the named consuming slice and an exit check. For an experiment, name one question and the decision its result enables; no production acceptance credit. For a check, name the candidate and claimed criteria. No fabricated repository commands: mark a future test command as proposed until confirmed.
@@ -62,9 +64,12 @@ Critical chain: <what currently limits the next delivery; no invented durations>
 ## Ownership and acceptance
 Integration owner: <owner of assembled behavior, not a permanent planner>
 Role preferences: <current context, alternative eligible work, switching checkpoint>
+After splitting: <eligible executor for next output; checkpoint/release if a retained parent claim prevents taking it>
 Milestone checks: <candidate; criteria; resources; reviewer eligibility>
 Evidence aggregator: <owner who reconciles receipts and gaps>
 ```
+
+A ready first slice can precede detailed later task cards once execution is authorized. Later refinement preserves original criteria, current claims and the agreed source version; it does not require a permanent planner or permit new product scope.
 
 A plan may have several ready outputs but fewer available qualified executors. Report both; never infer a live assignment from a proposed owner label. For one executor, omit this section unless resource conflicts or external handoffs still matter.
 
@@ -90,6 +95,7 @@ Delivered artifact: <path/ref and exact revision or content identity>
 Evidence level: <contract-ready / component-verified / integrated; name the claim>
 Verified: <check → actual outcome → evidence reference>
 Not verified: <remaining boundaries, failures and blockers>
+Unblock evidence, if applicable: <failure reference; responsible owner's explicit resolution; affected checks on corrected candidate>
 Changed paths/resources: <owned writes; running processes; dirty state if relevant>
 Ownership: <current claimant; transfer/release status; do not assume stopped>
 Next consumer/action: <who can do what with this artifact now>
